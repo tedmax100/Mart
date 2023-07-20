@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Yajra\DataTables\DataTables;
 
-class ReadyToShipAPiController extends Controller
+class ReadyToShipApiController extends Controller
 {
     public function all()
     {
