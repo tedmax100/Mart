@@ -10,14 +10,14 @@
 Clone 到本地後，執行 Composer 安裝套件
 
 ```
-composer install
+docker run --rm -e PHP_VERSION=8.1 -v $(pwd):/app --user $(id -u):$(id -g) composer install
 ```
 
 複製 `.env` 並產生 key
 
 ```
 cp .env.example .env
-php artisan key:generate
+docker run --rm -v $(pwd):/app -w /app php:8.1-fpm php artisan key:generate
 ```
 
 設定資料庫，已有設定好 Docker Compose，可以直接透過指令啟動：
@@ -29,7 +29,7 @@ docker-compose up -d
 執行 Migration
 
 ```
-php artisan migrate:fresh --seed
+docker compose exec app php artisan migrate:fresh --seed
 ```
 
 執行 PHP built-in 伺服器

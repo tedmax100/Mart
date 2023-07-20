@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Api\DeliveredApiController;
 use App\Http\Controllers\Api\OrderApiController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductApiController;
 use App\Http\Controllers\Api\ReadyToShipApiController;
 use App\Http\Controllers\Api\ReturnedApiController;
@@ -44,3 +45,14 @@ Route::get('/user-management/all', [UserManagementApiController::class, 'all'])-
 
 //image uploading
 Route::post('/product/images/{id}', [ProductImageController::class, 'store'])->name('store');
+
+
+// 訂單管理
+// 新增訂單
+Route::post('/order', [OrderController::class, 'store']);
+// 支付訂單
+// post 物流管理->新增物流編號
+Route::post('/order/{id}/pay', [OrderController::class, 'pay']);
+// 取消訂單
+// post 物流管理->取消物流
+Route::post('/order/{id}/cancel', [OrderController::class, 'cancel']);

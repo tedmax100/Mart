@@ -1,0 +1,42 @@
+receivers:
+  zipkin:
+    endpoint: 0.0.0.0:9411
+    parse_string_tags: false
+
+exporters:
+  otlp:
+    endpoint: "tempo:4317"
+    tls:
+      insecure: true
+  logging:
+    loglevel: debug
+    #verbosity: detailed
+  prometheus:
+    endpoint: "otelcol:9464"
+    resource_to_telemetry_conversion:
+      enabled: true
+    enable_open_metrics: true
+
+processors:
+  batch:
+  filter:
+    metrics:
+      exclude:
+        match_type: strict
+        metric_names:
+          - queueSize
+
+connectors:
+  spanmetrics:
+
+service:
+  telemetry:
+    logs:
+      level: debug
+      initial_fields:
+        service: aaa
+  pipelines:
+    traces:
+      receivers: [zipkin]
+      processors: [batch]
+      exporters: [otlp, logging]
