@@ -7,35 +7,44 @@ use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use OpenTelemetry\API\Trace\SpanInterface;
+use OpenTelemetry\API\Trace\TracerInterface;
 
 class OrderController extends Controller
 {
+    private TracerInterface $tracer;
+    private SpanInterface $rootSpan;
+
+    public function __construct()
+    {
+        global $tracer, $rootSpan;
+        $this->tracer = $tracer;
+        $this->rootSpan = $rootSpan;
+    }
     public function store(Request $request): JsonResponse
     {
         Log::info('test');
         $date = date('d/m/Y h:i:s a', time());
 
-        global $tracer, $rootSpan;
-        if ($rootSpan) {
-            $rootSpan->setAttribute('foo', 'bar');
-            $rootSpan->updateName('OrderController\\store dated ' . $date);
+        $this->rootSpan->setAttribute('foo', 'bar');
+        $this->rootSpan->updateName('OrderController\\store dated ' . $date);
 
-            $parent = $tracer->spanBuilder("訂單開始")->startSpan();
-            $scope = $parent->activate();
-            try {
-                $child = $tracer->spanBuilder("訂單寫入")->startSpan();
-                $child->setAttribute('name', $request->name);
-                $child->setAttribute('amount', $request->amount);
+        $parent = $this->tracer->spanBuilder("訂單開始")->startSpan();
+        $scope = $parent->activate();
+        try {
+            $child = $this->tracer->spanBuilder("訂單寫入")->startSpan();
+            $child->setAttribute('name', $request->name);
+            $child->setAttribute('amount', $request->amount);
+            usleep(rand(100000, 200000));
 //                $order = new Order([
 //                    'name' => $request->name,
 //                    'amount' => $request->amount
 //                ]);
 //                $order->save();
-                $child->end();
-            } finally {
-                $parent->end();
-                $scope->detach();
-            }
+            $child->end();
+        } finally {
+            $parent->end();
+            $scope->detach();
         }
 
         // 回傳新增訂單的回應
@@ -45,16 +54,16 @@ class OrderController extends Controller
     public function pay($id): JsonResponse
     {
         $date = date('d/m/Y h:i:s a', time());
-        global $tracer, $rootSpan;
-        $rootSpan->setAttribute('foo', 'bar');
-        $rootSpan->setAttribute('Kishan', 'Sangani');
-        $rootSpan->setAttribute('foo1', 'bar1');
-        $rootSpan->updateName('HelloController\\index dated ' . $date);
 
-        $parent = $tracer->spanBuilder("支付訂單完整流程")->startSpan();
+        $this->rootSpan->setAttribute('foo', 'bar');
+        $this->rootSpan->setAttribute('Kishan', 'Sangani');
+        $this->rootSpan->setAttribute('foo1', 'bar1');
+        $this->rootSpan->updateName('HelloController\\index dated ' . $date);
+
+        $parent = $this->tracer->spanBuilder("支付訂單完整流程")->startSpan();
         $scope = $parent->activate();
         try {
-            $child = $tracer->spanBuilder("支付訂單")->startSpan();
+            $child = $this->tracer->spanBuilder("支付訂單")->startSpan();
             // 在這裡處理支付訂單的邏輯
             // 根據訂單 ID 從資料庫中獲取相應的訂單
 //            $order = Order::find($id);
@@ -66,7 +75,7 @@ class OrderController extends Controller
 //            $order->pay = 1;
 //            $order->save();
             $child->end();
-            $child = $tracer->spanBuilder("物流")->startSpan();
+            $child = $this->tracer->spanBuilder("物流")->startSpan();
             // todo (post api) or (ship function)
             $child->end();
         } finally {
