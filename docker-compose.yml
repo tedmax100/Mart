@@ -34,6 +34,7 @@ services:
       - "80:8000"
     depends_on:
       - fluentbit
+      - mysql
     logging:
       driver: fluentd
       options:

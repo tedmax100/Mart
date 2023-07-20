@@ -32,13 +32,7 @@ docker-compose up -d
 docker compose exec app php artisan migrate:fresh --seed
 ```
 
-執行 PHP built-in 伺服器
-
-```
-php artisan serve
-```
-
-打開 http://localhost:8000 即可看到首頁。打開 http://localhost:8000/admin/login 可登入後台 
+打開 http://localhost 即可看到首頁。打開 http://localhost/admin/login 可登入後台 
 
 預設帳號如下，密碼統一為 `password`
 
