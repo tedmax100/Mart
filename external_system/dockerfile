@@ -1,0 +1,14 @@
+FROM golang:1.20.6-alpine3.18 AS builder
+WORKDIR /workspace/example
+ENV GO111MODULE=on CGO_ENABLED=0
+# download dependency
+COPY go.mod go.sum ./
+RUN  go mod download
+COPY . .
+RUN go build -o /bin/server
+
+
+FROM alpine:latest AS release
+# Copy from builder
+COPY --from=builder /bin/server /bin/server
+ENTRYPOINT ["./bin/server"]
