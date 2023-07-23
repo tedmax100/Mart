@@ -4,17 +4,21 @@ import (
 	"context"
 	"html/template"
 	"log"
+	"os"
 	"otel_demo/external_system/api"
 
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
-	stdout "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/exporters/zipkin"
+
+	//stdout "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 var tracer = otel.Tracer("gin-server")
+var logger = log.New(os.Stderr, "zipkin-example", log.Ldate|log.Ltime|log.Llongfile)
 
 func main() {
 	tp, err := initTracer()
@@ -42,10 +46,18 @@ func main() {
 }
 
 func initTracer() (*sdktrace.TracerProvider, error) {
-	exporter, err := stdout.New(stdout.WithPrettyPrint())
+	exporter, err := zipkin.New(
+		"http://localhost:9411/api/v2/spans",
+		zipkin.WithLogger(logger),
+	)
 	if err != nil {
 		return nil, err
 	}
+	/*
+		exporter, err := stdout.New(stdout.WithPrettyPrint())
+		if err != nil {
+			return nil, err
+		}*/
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithSampler(sdktrace.AlwaysSample()),
 		sdktrace.WithBatcher(exporter),
@@ -53,8 +65,4 @@ func initTracer() (*sdktrace.TracerProvider, error) {
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 	return tp, nil
-}
-
-func initController() {
-
 }
