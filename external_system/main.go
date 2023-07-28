@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"go.opentelemetry.io/otel/exporters/zipkin"
 	"html/template"
 	"log"
 	"os"
@@ -11,7 +12,6 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
-	stdout "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
@@ -46,15 +46,13 @@ func main() {
 }
 
 func initTracer() (*sdktrace.TracerProvider, error) {
-	/*
-		exporter, err := zipkin.New(
-			"http://localhost:9411/api/v2/spans",
-			zipkin.WithLogger(logger),
-		)
-		if err != nil {
-			return nil, err
-		}
-	*/
+	exporter, err := zipkin.New(
+		"http://collector:9411/api/v2/spans",
+		zipkin.WithLogger(logger),
+	)
+	if err != nil {
+		return nil, err
+	}
 	resources, err := resource.New(
 		context.Background(),
 		resource.WithAttributes(
@@ -65,10 +63,7 @@ func initTracer() (*sdktrace.TracerProvider, error) {
 	if err != nil {
 		log.Printf("Could not set resources: ", err)
 	}
-	exporter, err := stdout.New(stdout.WithPrettyPrint())
-	if err != nil {
-		return nil, err
-	}
+
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithSampler(sdktrace.AlwaysSample()),
 		sdktrace.WithBatcher(exporter),
