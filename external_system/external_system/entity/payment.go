@@ -20,7 +20,7 @@ type Payment struct {
 	Quantity int `form:"quantity" json:"quantity" xml:"quantity"  binding:"required"`
 
 	//您需要知道訂單的總價格以便可以請求相應的款項
-	Price int `form:"price" json:"price" xml:"price"  binding:"required"`
+	Price string `form:"price" json:"price" xml:"price"  binding:"required"`
 
 	// 訂單編號是每個訂單的唯一標識，用於跟踪和確認訂單的狀態。
 	OrderNumber string `form:"order_number" json:"order_number" xml:"order_number"  binding:"required"`

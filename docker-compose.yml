@@ -85,3 +85,18 @@ services:
       - ./src/grafana/provisioning:/etc/grafana/provisioning
     ports:
       - "3000:3000"
+
+  payment:
+    build:
+      context: external_system
+      dockerfile: dockerfile
+    container_name: payment-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - fluentbit
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
+        tag: app

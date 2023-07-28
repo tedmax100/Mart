@@ -3,15 +3,33 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Spatie\OpenTelemetry\Facades\Measure;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        //
+        global $tracer;
+        PendingRequest::macro('withTrace2', function () use ($tracer) {
+            if ($span = $tracer->spanBuilder("withTrace")->startSpan()) {
+                $headers['traceparent'] = sprintf(
+                    '%s-%s-%s-%02x',
+                    '00',
+                    $span->getContext()->getTraceId(),
+                    $span->getContext()->getSpanId(),
+                    $span->getContext()->getTraceFlags(),
+                );
+
+                /** @var PendingRequest $this */
+                $this->withHeaders($headers);
+            }
+
+            return $this;
+        });
     }
 
     public function boot()

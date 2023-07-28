@@ -16,4 +16,4 @@ RUN pecl install opentelemetry-beta && docker-php-ext-enable opentelemetry
 WORKDIR /var/www/html
 
 EXPOSE 8000
-CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8000", "--quiet"]
+CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8000"]
