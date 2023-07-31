@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -16,6 +17,7 @@ class Order
 {
     public function __invoke(OrderRequest $request, Cart $cartModel): RedirectResponse
     {
+        Log::info('order created');
         /** @var Cart $cart */
         $cart = $cartModel->newQuery()
             ->findOrFail($request->cart_id)
