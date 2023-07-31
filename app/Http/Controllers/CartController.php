@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -20,6 +21,7 @@ class CartController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        Log::info('add product to cart');
         /** @var User $user */
         $user = Auth::user();
 
