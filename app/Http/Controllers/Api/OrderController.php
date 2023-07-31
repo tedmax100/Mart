@@ -22,9 +22,24 @@ class OrderController extends Controller
         $this->rootSpan = $rootSpan;
     }
 
+    public function store(): JsonResponse
+    {
+        Log::info('order created');
+
+        // 回傳創立訂單的回應
+        if (mt_rand(0, 1)) {
+            $order = Order::factory()->create();
+            Log::info('order successfully');
+            return response()->json(['message' => 'Order created successfully', 'data' => $order]);
+        } else {
+            Log::info('order failed');
+            return response()->json(['message' => 'Order created failed'], 500);
+        }
+    }
+
     public function pay($id): JsonResponse
     {
-        Log::info('test');
+        Log::info('payment order');
         $date = date('d/m/Y h:i:s a', time());
 
         $this->rootSpan->updateName('HelloController\\index dated ' . $date);
@@ -95,8 +110,10 @@ class OrderController extends Controller
 
         // 回傳支付訂單的回應
         if ($orderStatus == 1) {
+            Log::info('payment completed');
             return response()->json(['message' => 'Order paid successfully', 'orderStatus' => $orderStatus]);
         } else {
+            Log::info('payment failed');
             return response()->json(['message' => 'Order paid failed', 'orderStatus' => $orderStatus]);
         }
     }
