@@ -79,8 +79,10 @@ class OrderController extends Controller
             'span_id' => $child->getContext()->getSpanId(),
         ]);
 
+        $orderStatus = 0;
 //        $child->setAttribute('paymentStatus', $reqPayment['paymentStatus']);
-        if ($reqPayment['paymentStatus'] == 'initiated') {
+        if ($reqPayment['paymentStatus'] == 'Initiated') {
+            $orderStatus = 1;
             $order->status = 'pay';
             $order->save();
         }
@@ -92,7 +94,11 @@ class OrderController extends Controller
         ]);
 
         // 回傳支付訂單的回應
-        return response()->json(['message' => 'Order paid successfully', 'pay' => 1]);
+        if ($orderStatus == 1) {
+            return response()->json(['message' => 'Order paid successfully', 'orderStatus' => $orderStatus]);
+        } else {
+            return response()->json(['message' => 'Order paid failed', 'orderStatus' => $orderStatus]);
+        }
     }
 
     public function cancel($id): JsonResponse
