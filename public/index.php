@@ -57,7 +57,7 @@ $tracer = (new TracerProvider(
         ),
     ],
     new AlwaysOnSampler(),
-))->getTracer('Hello World Laravel Web Server');
+))->getTracer('Laravel');
 
 $request = Request::createFromGlobals();
 $rootSpan = $tracer->spanBuilder($request->getUri())->startSpan();

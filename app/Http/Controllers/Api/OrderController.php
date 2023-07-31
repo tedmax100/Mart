@@ -27,9 +27,6 @@ class OrderController extends Controller
         Log::info('test');
         $date = date('d/m/Y h:i:s a', time());
 
-        $this->rootSpan->setAttribute('foo', 'bar');
-        $this->rootSpan->setAttribute('Kishan', 'Sangani');
-        $this->rootSpan->setAttribute('foo1', 'bar1');
         $this->rootSpan->updateName('HelloController\\index dated ' . $date);
 
         $parent = $this->tracer->spanBuilder("支付訂單完整流程")->startSpan();
@@ -37,7 +34,7 @@ class OrderController extends Controller
             'span_id' => $parent->getContext()->getSpanId(),
         ]);
 
-        $child = $this->tracer->spanBuilder("支付訂單")->startSpan();
+        $child = $this->tracer->spanBuilder("搜尋支付訂單")->startSpan();
         Log::info('Activated Payment Span', [
             'span_id' => $child->getContext()->getSpanId(),
         ]);
@@ -47,6 +44,7 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
+        $child->end();
         // 處理支付邏輯
         // 在 Context 中建立新的 Span
         $span = $this->tracer->spanBuilder("支付訂單")->startSpan();
@@ -54,8 +52,15 @@ class OrderController extends Controller
             'trace_id' => $this->rootSpan->getContext()->getTraceId(),
             'span_id' => $span->getContext()->getSpanId(),
         ]);
+        $headers['traceparent'] = sprintf(
+            '%s-%s-%s-%02x',
+            '00',
+            $span->getContext()->getTraceId(),
+            $span->getContext()->getSpanId(),
+            $span->getContext()->getTraceFlags(),
+        );
         // 執行 POST 請求並攜帶自訂 Header
-        $response = Http::withTrace2()->post(
+        $response = Http::withHeaders($headers)->post(
             'http://payment:8080/initPayment',
             $order->toArray()
         );
@@ -74,12 +79,11 @@ class OrderController extends Controller
             'span_id' => $child->getContext()->getSpanId(),
         ]);
 
-        $child->setAttribute('paymentStatus', $reqPayment['paymentStatus']);
+//        $child->setAttribute('paymentStatus', $reqPayment['paymentStatus']);
         if ($reqPayment['paymentStatus'] == 'initiated') {
             $order->status = 'pay';
             $order->save();
         }
-        $child->end();
         $parent->end();
 
         Log::info('Detached Complete Payment Span', [
