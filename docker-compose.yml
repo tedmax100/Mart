@@ -17,16 +17,18 @@ services:
   # Fleuntbit
   fluentbit:
     container_name: fluentbit
-    image: fluent/fluent-bit
+    image: fluent/fluent-bit:2.1.8-debug
     volumes:
       - ./src/fluentbit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./storage/logs/laravel.log:/var/log/laravel.log
     ports:
       - "24224:24224"
       - "24224:24224/udp"
 
   app:
     build:
-      dockerfile: src/php/Dockerfile
+      context: src/php
+      dockerfile: Dockerfile
     container_name: laravel-app
     volumes:
       - .:/var/www/html
