@@ -46,11 +46,13 @@ class OrderController extends Controller
 
         $parent = $this->tracer->spanBuilder("支付訂單完整流程")->startSpan();
         Log::info('Activated Complete Payment Span', [
+            'trace_id' => $this->rootSpan->getContext()->getTraceId(),
             'span_id' => $parent->getContext()->getSpanId(),
         ]);
 
         $child = $this->tracer->spanBuilder("搜尋支付訂單")->startSpan();
         Log::info('Activated Payment Span', [
+            'trace_id' => $this->rootSpan->getContext()->getTraceId(),
             'span_id' => $child->getContext()->getSpanId(),
         ]);
         // 在這裡處理支付訂單的邏輯

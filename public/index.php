@@ -9,6 +9,8 @@ use OpenTelemetry\SDK\Common\Export\Http\PsrTransportFactory;
 
 define('LARAVEL_START', microtime(true));
 
+// 設定環境變數
+putenv('OTEL_SERVICE_NAME=laravel-app');
 /*
 |--------------------------------------------------------------------------
 | Check If Application Is Under Maintenance

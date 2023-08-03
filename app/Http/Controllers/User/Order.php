@@ -45,8 +45,10 @@ class Order
         if ($order->save()) {
             //cart delete
             $cart->delete();
+            Log::info('order successfully');
             Alert::toast('Order Placed!', 'success');
         } else {
+            Log::info('order failed');
             Alert::toast('Checkout fail' . 'error');
         }
 
