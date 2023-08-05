@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
-	"go.opentelemetry.io/otel/exporters/zipkin"
 	"html/template"
 	"log"
 	"os"
 	"otel_demo/external_system/api"
 
-	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"go.opentelemetry.io/otel/exporters/zipkin"
+
+	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/propagation"
@@ -17,7 +18,7 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
-var tracer = otel.Tracer("gin-server")
+// var tracer = otel.Tracer("gin-server")
 var logger = log.New(os.Stderr, "zipkin-example", log.Ldate|log.Ltime|log.Llongfile)
 
 func main() {
@@ -30,9 +31,15 @@ func main() {
 			log.Printf("Error shutting down tracer provider: %v", err)
 		}
 	}()
-
+	//bb := MiddlewareBuilder{Tracer: tp.Tracer("test")}
 	router := gin.Default()
-	router.Use(otelgin.Middleware("payment_service"))
+	//router.Use(bb.Build())
+
+	router.Use(otelgin.Middleware(
+		"payment_service",
+		otelgin.WithTracerProvider(tp),
+	))
+
 	tmplName := "user"
 	tmplStr := "user {{ .name }} (id {{ .id }})\n"
 	tmpl := template.Must(template.New(tmplName).Parse(tmplStr))
@@ -66,7 +73,7 @@ func initTracer() (*sdktrace.TracerProvider, error) {
 
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithSampler(sdktrace.AlwaysSample()),
-		sdktrace.WithBatcher(exporter),
+		sdktrace.WithSyncer(exporter),
 		sdktrace.WithResource(resources),
 	)
 	otel.SetTracerProvider(tp)

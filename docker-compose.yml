@@ -20,7 +20,7 @@ services:
     image: fluent/fluent-bit:2.1.8-debug
     volumes:
       - ./src/fluentbit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
-      - ./storage/logs/laravel.log:/var/log/laravel.log
+      - ./storage/logs:/var/log
     ports:
       - "24224:24224"
       - "24224:24224/udp"
