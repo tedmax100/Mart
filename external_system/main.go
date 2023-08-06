@@ -36,7 +36,7 @@ func main() {
 	//router.Use(bb.Build())
 
 	router.Use(otelgin.Middleware(
-		"payment_service",
+		"mart_payment_service",
 		otelgin.WithTracerProvider(tp),
 	))
 
@@ -63,7 +63,7 @@ func initTracer() (*sdktrace.TracerProvider, error) {
 	resources, err := resource.New(
 		context.Background(),
 		resource.WithAttributes(
-			attribute.String("service.name", "payment-app"),
+			attribute.String("service.name", "mart_payment-app"),
 			attribute.String("library.language", "go"),
 		),
 	)
