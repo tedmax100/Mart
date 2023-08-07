@@ -46,7 +46,8 @@ Route::get('/user-management/all', [UserManagementApiController::class, 'all'])-
 //image uploading
 Route::post('/product/images/{id}', [ProductImageController::class, 'store'])->name('store');
 
-
+//將商品加入購物車
+Route::post('/add_cart', [OrderController::class, 'addCart']);
 // 訂單管理
 // 新增訂單
 Route::post('/order', [OrderController::class, 'store']);

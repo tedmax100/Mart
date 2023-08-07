@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use OpenTelemetry\API\Trace\SpanInterface;
 use OpenTelemetry\API\Trace\TracerInterface;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class OrderController extends Controller
 {
@@ -150,5 +156,33 @@ class OrderController extends Controller
 
         // 回傳取消訂單的回應
         return response()->json(['message' => 'Order canceled successfully', 'order' => $order]);
+    }
+    public function addCart(): JsonResponse
+    {
+        //先暫訂使用Admin使用者ID
+        $user_id = 1;
+        $user = User::findOrFail($user_id);
+
+        //隨機取一個商品ID
+        $product = Product::inRandomOrder()->first();
+
+        $exists = $user->cart()
+            ->where('product_id', $product->id)
+            ->get();
+
+        if ($exists->count()) {
+            return response()->json(['message' => 'You haved already added']);
+        }
+
+        $cart = new Cart();
+        $cart->user_id = $user_id;
+        $cart->product_id = $product->id;
+        $cart->quantity = $request->quantity ?? 1;
+
+        if ($cart->save()) {
+            return response()->json(['message' => 'Product added to cart!']);
+        } else {
+            return response()->json(['message' => 'Something went wrong']);
+        }
     }
 }
