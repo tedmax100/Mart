@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94b486b5e79c273f890ae0389ea7df5e",
+    "content-hash": "02d117b117a8685fec5c0a82d1cabd13",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2996,6 +2996,72 @@
                 "source": "https://github.com/opentelemetry-php/opentelemetry-meta/tree/1.0.0beta1"
             },
             "time": "2023-04-03T04:08:03+00:00"
+        },
+        {
+            "name": "open-telemetry/opentelemetry-auto-laravel",
+            "version": "0.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentelemetry-php/contrib-auto-laravel.git",
+                "reference": "70e5a29ea8db64e4f69cbd6b0816ca2d44a5fcc3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentelemetry-php/contrib-auto-laravel/zipball/70e5a29ea8db64e4f69cbd6b0816ca2d44a5fcc3",
+                "reference": "70e5a29ea8db64e4f69cbd6b0816ca2d44a5fcc3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-opentelemetry": "*",
+                "laravel/framework": "*",
+                "open-telemetry/api": "^1.0.0beta10",
+                "open-telemetry/sem-conv": "^1",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3",
+                "guzzlehttp/guzzle": "*",
+                "laravel/sail": "*",
+                "laravel/sanctum": "*",
+                "laravel/tinker": "*",
+                "nunomaduro/collision": "*",
+                "open-telemetry/sdk": "^1.0",
+                "phan/phan": "^5.0",
+                "php-http/mock-client": "*",
+                "phpstan/phpstan": "^1.1",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "psalm/plugin-phpunit": "^0.16",
+                "spatie/laravel-ignition": "*",
+                "vimeo/psalm": "^4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "_register.php"
+                ],
+                "psr-4": {
+                    "OpenTelemetry\\Contrib\\Instrumentation\\Laravel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "OpenTelemetry auto-instrumentation for Laravel",
+            "homepage": "https://opentelemetry.io/docs/php",
+            "keywords": [
+                "instrumentation",
+                "laravel",
+                "open-telemetry",
+                "opentelemetry",
+                "otel",
+                "tracing"
+            ],
+            "support": {
+                "source": "https://github.com/opentelemetry-php/contrib-auto-laravel/tree/0.0.9"
+            },
+            "time": "2023-07-03T00:47:17+00:00"
         },
         {
             "name": "open-telemetry/opentelemetry-auto-psr15",

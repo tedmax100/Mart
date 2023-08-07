@@ -21,7 +21,7 @@ class CartController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        Log::info('add product to cart');
+        Log::info('add_product_to_cart');
         /** @var User $user */
         $user = Auth::user();
 

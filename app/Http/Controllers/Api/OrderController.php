@@ -24,7 +24,7 @@ class OrderController extends Controller
 
     public function store(): JsonResponse
     {
-        Log::info('order created');
+        Log::info('ORDER_CREATED');
 
         // 回傳創立訂單的回應
         if (mt_rand(0, 1)) {
@@ -39,7 +39,7 @@ class OrderController extends Controller
 
     public function pay($id): JsonResponse
     {
-        Log::info('payment order');
+        Log::info('ORDER_PAY');
         $date = date('d/m/Y h:i:s a', time());
 
         $this->rootSpan->updateName('HelloController\\index dated ' . $date);
@@ -112,10 +112,10 @@ class OrderController extends Controller
 
         // 回傳支付訂單的回應
         if ($orderStatus == 1) {
-            Log::info('payment completed');
+            Log::info('ORDER_PAYED');
             return response()->json(['message' => 'Order paid successfully', 'orderStatus' => $orderStatus]);
         } else {
-            Log::info('payment failed');
+            Log::info('ORDER_PAY_FAILED');
             return response()->json(['message' => 'Order paid failed', 'orderStatus' => $orderStatus]);
         }
     }

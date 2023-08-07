@@ -34,6 +34,7 @@ type PaymentInitiationResponse struct {
 	TransactionID   string        `json:"transactionId"`
 	TransactionTime time.Time     `json:"transactionTime"`
 	Error           string        `json:"error,omitempty"`
+	TraceId         string        `json:"traceId"`
 }
 
 // InitiatePayment, 用戶選擇好了支付方式後, 成立Payment以便後續處理

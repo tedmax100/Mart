@@ -20,7 +20,7 @@ services:
     image: fluent/fluent-bit:2.1.8-debug
     volumes:
       - ./src/fluentbit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
-      - ./storage/logs/laravel.log:/var/log/laravel.log
+      - ./storage/logs:/var/log
     ports:
       - "24224:24224"
       - "24224:24224/udp"
@@ -37,11 +37,11 @@ services:
     depends_on:
       - fluentbit
       - mysql
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: 127.0.0.1:24224
-        tag: app
+    #logging:
+    #  driver: fluentd
+    #  options:
+    #    fluentd-address: 127.0.0.1:24224
+    #    tag: app
 
   # To eventually offload to Tempo...
   tempo:
@@ -97,8 +97,8 @@ services:
       - "8080:8080"
     depends_on:
       - fluentbit
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: 127.0.0.1:24224
-        tag: app
+    #logging:
+    #  driver: fluentd
+    #  options:
+    #    fluentd-address: 127.0.0.1:24224
+    #    tag: app
