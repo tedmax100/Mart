@@ -51,6 +51,8 @@ class OrderController extends Controller
         $this->rootSpan->updateName('HelloController\\index dated ' . $date);
 
         $parent = $this->tracer->spanBuilder("支付訂單完整流程")->startSpan();
+        $parent1 = $parent->activate();
+
         Log::info('Activated Complete Payment Span', [
             'trace_id' => $this->rootSpan->getContext()->getTraceId(),
             'span_id' => $parent->getContext()->getSpanId(),
@@ -110,6 +112,7 @@ class OrderController extends Controller
             $order->save();
         }
         $parent->end();
+        $parent1->detach();
 
         Log::info('Detached Complete Payment Span', [
             'trace_id' => $this->rootSpan->getContext()->getTraceId(),
