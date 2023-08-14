@@ -22,3 +22,13 @@ datasources:
     hide: false
   lokiSearch:
     datasourceUid: 'loki'
+- name: prometheus
+  type: prometheus
+  access: proxy
+  url: http://prometheus:9090
+  uid: prometheus
+  basicAuth: false
+  jsonData:
+    tlsAuth: false
+    tlsAuthWithCACert: false
+  editable: false
