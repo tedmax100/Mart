@@ -8,13 +8,10 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use OpenTelemetry\API\Trace\SpanInterface;
 use OpenTelemetry\API\Trace\TracerInterface;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class OrderController extends Controller
 {
@@ -162,26 +159,41 @@ class OrderController extends Controller
     }
     public function addCart(): JsonResponse
     {
+        $parent = $this->tracer->spanBuilder("商品加入購物車")->startSpan();
+        $parent1 = $parent->activate();
+        Log::info('ItemAddedToCart', [
+            'trace_id' => $this->rootSpan->getContext()->getTraceId(),
+            'span_id' => $parent->getContext()->getSpanId(),
+        ]);
+
+        $child = $this->tracer->spanBuilder("搜尋user")->startSpan();
         //先暫訂使用Admin使用者ID
         $user_id = 1;
         $user = User::findOrFail($user_id);
+        $child->end();
 
+        $child = $this->tracer->spanBuilder("搜尋隨機商品")->startSpan();
         //隨機取一個商品ID
         $product = Product::inRandomOrder()->first();
 
         $exists = $user->cart()
             ->where('product_id', $product->id)
             ->get();
+        $child->end();
 
         if ($exists->count()) {
             return response()->json(['message' => 'You haved already added']);
         }
 
+        $child = $this->tracer->spanBuilder("新增商品到購物車")->startSpan();
         $cart = new Cart();
         $cart->user_id = $user_id;
         $cart->product_id = $product->id;
         $cart->quantity = $request->quantity ?? 1;
+        $child->end();
 
+        $parent->end();
+        $parent1->detach();
         if ($cart->save()) {
             return response()->json(['message' => 'Product added to cart!']);
         } else {
