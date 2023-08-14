@@ -71,3 +71,8 @@ down:
 
 vendor:
 	composer install
+
+
+# --- k6 run -o experimental-prometheus-rw -s duration:target src/k6/script.js
+k6: 
+	k6 run -o experimental-prometheus-rw src/k6/script.js
