@@ -1,47 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "9.4.3"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -68,7 +25,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": null,
   "links": [],
   "liveNow": true,
   "panels": [
@@ -87,6 +43,136 @@
     },
     {
       "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 123,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "editorMode": "code",
+          "expr": " 100*(count_over_time({job=\"mart\"} |= `ORDER_CREATED`[1m])/ count_over_time({job=\"mart\"} |= `ItemAddedToCart`[1m]))",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "購物車轉化率",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 121,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "editorMode": "code",
+          "expr": " 100*(count_over_time({job=\"mart\"} |= `ORDER_PAYED`[1m])/ count_over_time({job=\"mart\"} |= `ORDER_CREATED`[1m]))",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "付款轉化率",
+      "type": "stat"
+    },
+    {
+      "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
@@ -97,9 +183,7 @@
           },
           "custom": {
             "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
+            "displayMode": "auto",
             "inspect": false
           },
           "mappings": [],
@@ -147,7 +231,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 14
       },
       "id": 119,
       "options": {
@@ -162,7 +246,7 @@
         "frameIndex": 4,
         "showHeader": true
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -287,7 +371,7 @@
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 6
+        "y": 19
       },
       "id": 49,
       "options": {
@@ -303,7 +387,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -382,7 +466,7 @@
         "h": 5,
         "w": 4,
         "x": 4,
-        "y": 6
+        "y": 19
       },
       "id": 71,
       "interval": "1s",
@@ -399,7 +483,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -479,7 +563,7 @@
         "h": 5,
         "w": 4,
         "x": 8,
-        "y": 6
+        "y": 19
       },
       "id": 51,
       "interval": "1s",
@@ -498,7 +582,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -578,7 +662,7 @@
         "h": 5,
         "w": 4,
         "x": 12,
-        "y": 6
+        "y": 19
       },
       "id": 52,
       "options": {
@@ -596,7 +680,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -677,7 +761,7 @@
         "h": 5,
         "w": 4,
         "x": 16,
-        "y": 6
+        "y": 19
       },
       "id": 63,
       "options": {
@@ -695,7 +779,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -775,7 +859,7 @@
         "h": 5,
         "w": 4,
         "x": 20,
-        "y": 6
+        "y": 19
       },
       "id": 64,
       "options": {
@@ -793,7 +877,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1070,7 +1154,7 @@
         "h": 13,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 24
       },
       "id": 14,
       "interval": "5",
@@ -1213,7 +1297,7 @@
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 24
+        "y": 37
       },
       "id": 85,
       "interval": "1s",
@@ -1232,7 +1316,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1341,7 +1425,7 @@
         "h": 10,
         "w": 9,
         "x": 4,
-        "y": 24
+        "y": 37
       },
       "id": 18,
       "interval": "5s",
@@ -1494,7 +1578,7 @@
         "h": 10,
         "w": 11,
         "x": 13,
-        "y": 24
+        "y": 37
       },
       "id": 78,
       "interval": "5",
@@ -1513,7 +1597,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1610,7 +1694,7 @@
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 29
+        "y": 42
       },
       "id": 92,
       "interval": "1s",
@@ -1629,7 +1713,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1663,9 +1747,7 @@
           },
           "custom": {
             "align": "center",
-            "cellOptions": {
-              "type": "auto"
-            },
+            "displayMode": "auto",
             "filterable": true,
             "inspect": false
           },
@@ -1700,13 +1782,6 @@
               "options": "Success Rate"
             },
             "properties": [
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "mode": "basic",
-                  "type": "color-background"
-                }
-              },
               {
                 "id": "color",
                 "value": {
@@ -1744,7 +1819,7 @@
         "h": 7,
         "w": 13,
         "x": 0,
-        "y": 34
+        "y": 47
       },
       "id": 104,
       "interval": "1",
@@ -1762,7 +1837,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1891,9 +1966,7 @@
         "defaults": {
           "custom": {
             "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
+            "displayMode": "auto",
             "inspect": false
           },
           "mappings": [],
@@ -1954,7 +2027,7 @@
         "h": 7,
         "w": 11,
         "x": 13,
-        "y": 34
+        "y": 47
       },
       "id": 107,
       "interval": "1",
@@ -1976,7 +2049,7 @@
           }
         ]
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "title": "Thresholds WIP",
       "transformations": [
         {
@@ -2081,7 +2154,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 54
       },
       "id": 32,
       "panels": [],
@@ -2109,9 +2182,7 @@
           },
           "custom": {
             "align": "center",
-            "cellOptions": {
-              "type": "color-text"
-            },
+            "displayMode": "auto",
             "filterable": true,
             "inspect": false
           },
@@ -2134,13 +2205,6 @@
               "options": "status"
             },
             "properties": [
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "mode": "basic",
-                  "type": "color-background"
-                }
-              },
               {
                 "id": "unit",
                 "value": "short"
@@ -2629,7 +2693,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 55
       },
       "id": 43,
       "interval": "1",
@@ -2646,7 +2710,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -2903,7 +2967,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 51
+        "y": 64
       },
       "id": 41,
       "interval": "1s",
@@ -3045,9 +3109,7 @@
         "defaults": {
           "custom": {
             "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
+            "displayMode": "auto",
             "inspect": false
           },
           "mappings": [
@@ -3141,7 +3203,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 62
+        "y": 75
       },
       "id": 54,
       "interval": "5s",
@@ -3157,7 +3219,7 @@
         "frameIndex": 1,
         "showHeader": true
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -3353,7 +3415,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 69
+        "y": 82
       },
       "id": 35,
       "panels": [],
@@ -3380,9 +3442,7 @@
         "defaults": {
           "custom": {
             "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
+            "displayMode": "auto",
             "inspect": false
           },
           "mappings": [],
@@ -3390,8 +3450,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3466,7 +3525,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 70
+        "y": 83
       },
       "id": 116,
       "interval": "5s",
@@ -3482,7 +3541,7 @@
         "frameIndex": 1,
         "showHeader": true
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -3719,8 +3778,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -3924,7 +3982,7 @@
         "h": 13,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 90
       },
       "id": 117,
       "interval": "5",
@@ -4011,9 +4069,9 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
+  "refresh": "5s",
   "revision": 1,
-  "schemaVersion": 38,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "prometheus",
@@ -4041,7 +4099,11 @@
       },
       {
         "allValue": ".*",
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
@@ -4063,7 +4125,11 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
@@ -4086,7 +4152,11 @@
       },
       {
         "allValue": "http.*",
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
@@ -4149,13 +4219,13 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Test Result",
   "uid": "01npcT44k",
-  "version": 8,
+  "version": 2,
   "weekStart": ""
 }
