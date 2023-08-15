@@ -43,12 +43,9 @@ class OrderController extends Controller
     public function pay($id): JsonResponse
     {
         Log::info('ORDER_PAY');
-        $date = date('d/m/Y h:i:s a', time());
-
-        $this->rootSpan->updateName('HelloController\\index dated ' . $date);
 
         $parent = $this->tracer->spanBuilder("支付訂單完整流程")->startSpan();
-        $parent1 = $parent->activate();
+        $scope = $parent->activate();
 
         Log::info('Activated Complete Payment Span', [
             'trace_id' => $this->rootSpan->getContext()->getTraceId(),
@@ -109,7 +106,7 @@ class OrderController extends Controller
             $order->save();
         }
         $parent->end();
-        $parent1->detach();
+        $scope->detach();
 
         Log::info('Detached Complete Payment Span', [
             'trace_id' => $this->rootSpan->getContext()->getTraceId(),
@@ -160,22 +157,18 @@ class OrderController extends Controller
     public function addCart(): JsonResponse
     {
         $parent = $this->tracer->spanBuilder("商品加入購物車")->startSpan();
-        $parent1 = $parent->activate();
+        $scope = $parent->activate();
         Log::info('ItemAddedToCart', [
             'trace_id' => $this->rootSpan->getContext()->getTraceId(),
             'span_id' => $parent->getContext()->getSpanId(),
         ]);
 
-        $child = $this->tracer->spanBuilder("搜尋user")->startSpan();
-        //先暫訂使用Admin使用者ID
-        $user_id = 1;
-        $user = User::findOrFail($user_id);
-        $child->end();
-
         $child = $this->tracer->spanBuilder("搜尋隨機商品")->startSpan();
         //隨機取一個商品ID
         $product = Product::inRandomOrder()->first();
 
+        $user_id = 1;
+        $user = $this->searchUser();
         $exists = $user->cart()
             ->where('product_id', $product->id)
             ->get();
@@ -193,11 +186,21 @@ class OrderController extends Controller
         $child->end();
 
         $parent->end();
-        $parent1->detach();
+        $scope->detach();
         if ($cart->save()) {
             return response()->json(['message' => 'Product added to cart!']);
         } else {
             return response()->json(['message' => 'Something went wrong']);
         }
+    }
+
+    private function searchUser()
+    {
+        $child = $this->tracer->spanBuilder("搜尋user")->startSpan();
+        //先暫訂使用Admin使用者ID
+        $user_id = 1;
+        $user = User::findOrFail($user_id);
+        $child->end();
+        return $user;
     }
 }
