@@ -76,3 +76,8 @@ vendor:
 # --- k6 run -o experimental-prometheus-rw -s duration:target src/k6/script.js
 k6: 
 	k6 run -o experimental-prometheus-rw src/k6/script.js
+
+start:
+	docker compose up -d
+	sleep 10
+	docker compose exec app php artisan migrate:fresh --seed
