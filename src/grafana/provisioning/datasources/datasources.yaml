@@ -16,12 +16,19 @@ datasources:
   type: tempo
   url: http://tempo:3200
   uid: tempo
-  nodeGraph:
-    enabled: true
-  search:
-    hide: false
-  lokiSearch:
-    datasourceUid: 'loki'
+  jsonData:
+    serviceMap:
+      datasourceUid: 'prometheus'
+    nodeGraph:
+      enabled: true
+    search:
+      hide: false
+    lokiSearch:
+      datasourceUid: 'loki'
+    traceQuery:
+      timeShiftEnabled: true
+      spanStartTimeShift: '1h'
+      spanEndTimeShift: '-1h'
 - name: prometheus
   type: prometheus
   access: proxy
